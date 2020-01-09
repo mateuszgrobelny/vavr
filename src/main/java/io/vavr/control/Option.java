@@ -487,18 +487,17 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
     }
 
     /**
-     * Returns the value if this is a {@code Some}, otherwise the {@code other} value is returned,
-     * if this is a {@code None}.
+     * Returns the value if this is a {@code Some}, otherwise {@code supplier.get()} is returned.
      * <p>
-     * Please note, that the other value is lazily evaluated.
+     * Please note, that the alternate value is lazily evaluated.
      *
      * <pre>{@code
      * Supplier<Double> supplier = () -> 5.342;
      *
-     * // Creates Some(1.2)
+     * // = 1.2
      * Option.of(1.2).getOrElse(supplier);
      *
-     * // Creates None
+     * // = 5.342
      * Option.none().getOrElse(supplier);
      * }</pre>
      *

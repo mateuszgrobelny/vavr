@@ -612,7 +612,9 @@ public interface Traversable<T> extends Iterable<T>, Foldable<T>, io.vavr.Value<
      *
      * @return the first value
      * @throws NoSuchElementException if this {@code Traversable} is empty.
+     * @deprecated get() will be removed from collections. Use head() instead.
      */
+    @Deprecated
     @Override
     default T get() {
         return head();

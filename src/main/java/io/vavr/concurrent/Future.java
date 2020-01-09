@@ -1225,6 +1225,42 @@ public interface Future<T> extends Iterable<T>, Value<T> {
     }
 
     /**
+     * Returns the underlying value if this {@code Future} was completed successful, otherwise {@code other}.
+     *
+     * @param other An alternative value.
+     * @return A value of type {@code T}
+     */
+    @Override
+    default T getOrElse(T other) {
+        return isEmpty() ? other : get();
+    }
+
+    /**
+     * Returns the underlying value if this {@code Future} was completed successful, otherwise {@code supplier.get()}.
+     * <p>
+     * Please note, that this call blocks until the {@code Future} is completed. The alternate value is lazily evaluated.
+     *
+     * <pre>{@code
+     * Supplier<Double> supplier = () -> 5.342;
+     *
+     * // = 1.2
+     * Future.successful(1.2).getOrElse(supplier);
+     *
+     * // = 5.342
+     * Future.failed(new Exception()).getOrElse(supplier)
+     * }</pre>
+     *
+     * @param supplier An alternative value supplier.
+     * @return A value of type {@code T}
+     * @throws NullPointerException if supplier is null
+     */
+    @Override
+    default T getOrElse(Supplier<? extends T> supplier) {
+        Objects.requireNonNull(supplier, "supplier is null");
+        return isEmpty() ? supplier.get() : get();
+    }
+
+    /**
      * A {@code Futures}'s value is computed asynchronously.
      *
      * @return true

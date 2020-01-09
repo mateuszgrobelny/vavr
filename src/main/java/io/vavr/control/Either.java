@@ -691,6 +691,42 @@ public abstract class Either<L, R> implements Iterable<R>, io.vavr.Value<R>, Ser
     @Override
     public abstract R get();
 
+    /**
+     * Returns the underlying value if this is a {@code Right}, otherwise {@code other}.
+     *
+     * @param other An alternative value.
+     * @return A value of type {@code R}
+     */
+    @Override
+    public R getOrElse(R other) {
+        return isEmpty() ? other : get();
+    }
+
+    /**
+     * Returns the underlying value if this is a {@code Right}, otherwise {@code supplier.get()}.
+     * <p>
+     * Please note, that the alternate value is lazily evaluated.
+     *
+     * <pre>{@code
+     * Supplier<Double> supplier = () -> 5.342;
+     *
+     * // = 1.2
+     * Either.right(1.2).getOrElse(supplier);
+     *
+     * // = 5.342
+     * Either.left("").getOrElse(supplier);
+     * }</pre>
+     *
+     * @param supplier An alternative value supplier.
+     * @return A value of type {@code R}
+     * @throws NullPointerException if supplier is null
+     */
+    @Override
+    public R getOrElse(Supplier<? extends R> supplier) {
+        Objects.requireNonNull(supplier, "supplier is null");
+        return isEmpty() ? supplier.get() : get();
+    }
+
     @Override
     public final boolean isEmpty() {
         return isLeft();

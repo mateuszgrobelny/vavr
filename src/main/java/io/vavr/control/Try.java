@@ -629,12 +629,47 @@ public abstract class Try<T> implements Iterable<T>, io.vavr.Value<T>, Serializa
     public abstract T get();
 
     /**
-     * Gets the cause if this is a Failure or throws if this is a Success.
+     * Gets the cause if this is a {@code Failure} or throws if this is a {@code Success}.
      *
      * @return The cause if this is a Failure
      * @throws UnsupportedOperationException if this is a Success
      */
     public abstract Throwable getCause();
+
+    /**
+     * Returns the underlying value if this is a {@code Success}, otherwise {@code other}.
+     *
+     * @param other An alternative value.
+     * @return A value of type {@code T}
+     */
+    public T getOrElse(T other) {
+        return isEmpty() ? other : get();
+    }
+
+    /**
+     * Returns the underlying value if this is a {@code Success}, otherwise {@code supplier.get()}.
+     * <p>
+     * Please note, that the alternate value is lazily evaluated.
+     *
+     * <pre>{@code
+     * Supplier<Double> supplier = () -> 5.342;
+     *
+     * // = 1.2
+     * Try.of(() -> 1.2).getOrElse(supplier);
+     *
+     * // = 5.342
+     * Try.failure(new Exception()).getOrElse(supplier);
+     * }</pre>
+     *
+     * @param supplier An alternative value supplier.
+     * @return A value of type {@code T}
+     * @throws NullPointerException if supplier is null
+     */
+    @Override
+    public T getOrElse(Supplier<? extends T> supplier) {
+        Objects.requireNonNull(supplier, "supplier is null");
+        return isEmpty() ? supplier.get() : get();
+    }
 
     /**
      * A {@code Try}'s value is computed synchronously.

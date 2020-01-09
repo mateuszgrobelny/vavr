@@ -170,9 +170,7 @@ import static io.vavr.API.*;
  * <strong>Please note:</strong> flatMap signatures are manifold and have to be declared by subclasses of Value.
  *
  * @param <T> The type of the wrapped value.
- * @deprecated Marked for removal
  */
-@Deprecated
 public interface Value<T> extends Iterable<T> {
 
     /**
@@ -354,7 +352,9 @@ public interface Value<T> extends Iterable<T> {
      * <strong>Additional note:</strong> Dynamic proxies will wrap an undeclared exception in a {@link java.lang.reflect.UndeclaredThrowableException}.
      *
      * @return the underlying value if this is not empty, otherwise {@code get()} throws a {@code Throwable}
+     * @deprecated get() will be removed from collections. It should be used on single-valued types only.
      */
+    @Deprecated
     T get();
     
     /**
@@ -362,18 +362,22 @@ public interface Value<T> extends Iterable<T> {
      *
      * @param other An alternative value.
      * @return A value of type {@code T}
+     * @deprecated will be removed from io.vavr.collection should be used by single-valued types only
      */
+    @Deprecated
     default T getOrElse(T other) {
         return isEmpty() ? other : get();
     }
 
     /**
-     * Returns the underlying value if present, otherwise {@code other}.
+     * Returns the underlying value if present, otherwise {@code supplier.get()}.
      *
      * @param supplier An alternative value supplier.
      * @return A value of type {@code T}
      * @throws NullPointerException if supplier is null
+     * @deprecated will be removed from io.vavr.collection should be used by single-valued types only
      */
+    @Deprecated
     default T getOrElse(Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return isEmpty() ? supplier.get() : get();
@@ -387,7 +391,9 @@ public interface Value<T> extends Iterable<T> {
      * @return A value of type {@code T}.
      * @throws NullPointerException if supplier is null
      * @throws X                    if no value is present
+     * @deprecated will be removed from io.vavr.collection should be used by single-valued types only
      */
+    @Deprecated
     default <X extends Throwable> T getOrElseThrow(Supplier<X> supplier) throws X {
         Objects.requireNonNull(supplier, "supplier is null");
         if (isEmpty()) {
@@ -403,7 +409,9 @@ public interface Value<T> extends Iterable<T> {
      * @param supplier An alternative value supplier.
      * @return A value of type {@code T}.
      * @throws NullPointerException if supplier is null
+     * @deprecated will be removed from io.vavr.collection should be used by single-valued types only
      */
+    @Deprecated
     default T getOrElseTry(CheckedFunction0<? extends T> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return isEmpty() ? Try.of(supplier).get() : get();
@@ -413,7 +421,9 @@ public interface Value<T> extends Iterable<T> {
      * Returns the underlying value if present, otherwise {@code null}.
      *
      * @return A value of type {@code T} or {@code null}.
+     * @deprecated will be removed from io.vavr.collection should be used by single-valued types only
      */
+    @Deprecated
     default T getOrNull() {
         return isEmpty() ? null : get();
     }

@@ -564,13 +564,49 @@ public abstract class Validation<E, T> implements Iterable<T>, Value<T>, Seriali
     }
 
     /**
-     * Gets the value of this {@code Validation} if is a {@code Valid} or throws if this is an {@code Invalid}.
+     * Gets the value of this {@code Validation} if this is a {@code Valid} or throws if this is an {@code Invalid}.
      *
      * @return The value of this {@code Validation}
      * @throws NoSuchElementException if this is an {@code Invalid}
      */
     @Override
     public abstract T get();
+
+    /**
+     * Returns the underlying value if this is a {@code Valid}, otherwise {@code other}.
+     *
+     * @param other An alternative value.
+     * @return A value of type {@code T}
+     */
+    @Override
+    public T getOrElse(T other) {
+        return isEmpty() ? other : get();
+    }
+
+    /**
+     * Returns the underlying value if this is a {@code Right}, otherwise {@code supplier.get()}.
+     * <p>
+     * Please note, that the alternate value is lazily evaluated.
+     *
+     * <pre>{@code
+     * Supplier<Double> supplier = () -> 5.342;
+     *
+     * // = 1.2
+     * Validation.valid(1.2).getOrElse(supplier);
+     *
+     * // = 5.342
+     * Validation.invalid("").getOrElse(supplier);
+     * }</pre>
+     *
+     * @param supplier An alternative value supplier.
+     * @return A value of type {@code R}
+     * @throws NullPointerException if supplier is null
+     */
+    @Override
+    public T getOrElse(Supplier<? extends T> supplier) {
+        Objects.requireNonNull(supplier, "supplier is null");
+        return isEmpty() ? supplier.get() : get();
+    }
 
     /**
      * Gets the value if it is a Valid or an value calculated from the error.
