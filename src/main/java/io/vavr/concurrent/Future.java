@@ -1236,7 +1236,7 @@ public interface Future<T> extends Iterable<T>, Value<T> {
     }
 
     /**
-     * Returns the underlying value if this {@code Future} was completed successful, otherwise {@code supplier.get()}.
+     * Returns the underlying value if this {@code Future} was completed successfully, otherwise {@code supplier.get()}.
      * <p>
      * Please note, that this call blocks until the {@code Future} is completed. The alternate value is lazily evaluated.
      *
@@ -1258,6 +1258,27 @@ public interface Future<T> extends Iterable<T>, Value<T> {
     default T getOrElse(Supplier<? extends T> supplier) {
         Objects.requireNonNull(supplier, "supplier is null");
         return isEmpty() ? supplier.get() : get();
+    }
+
+    /**
+     * Returns the underlying value if this {@code Future} was completed successfully, otherwise throws {@code exceptionSupplier.get()}.
+     * <p>
+     * Please note, that this call blocks until the {@code Future} is completed.
+     *
+     * @param <X>               a Throwable type
+     * @param exceptionSupplier An exception supplier.
+     * @return A value of type {@code T}.
+     * @throws NullPointerException if exceptionSupplier is null
+     * @throws X                    if no value is present
+     */
+    @Override
+    default <X extends Throwable> T getOrElseThrow(Supplier<X> exceptionSupplier) throws X {
+        Objects.requireNonNull(exceptionSupplier, "exceptionSupplier is null");
+        if (isEmpty()) {
+            throw exceptionSupplier.get();
+        } else {
+            return get();
+        }
     }
 
     /**

@@ -67,7 +67,7 @@ public abstract class Either<L, R> implements Iterable<R>, io.vavr.Value<R>, Ser
      * Constructs a {@link Right}
      *
      * <pre>{@code
-     * // Creates Either instance initiated with right value 1
+     * // = Either instance initiated with right value 1
      * Either<?, Integer> either = Either.right(1);
      * }</pre>
      *
@@ -84,7 +84,7 @@ public abstract class Either<L, R> implements Iterable<R>, io.vavr.Value<R>, Ser
      * Constructs a {@link Left}
      *
      * <pre>{@code
-     * // Creates Either instance initiated with left value "error message"
+     * // = Either instance initiated with left value "error message"
      * Either<String, ?> either = Either.left("error message");
      * }</pre>
      *
@@ -440,6 +440,25 @@ public abstract class Either<L, R> implements Iterable<R>, io.vavr.Value<R>, Ser
         Objects.requireNonNull(action, "action is null");
         if (isLeft()) {
             action.accept(getLeft());
+        }
+    }
+
+    /**
+     * Returns the underlying value if this is a {@code Right}, otherwise throws {@code exceptionSupplier.get()}.
+     *
+     * @param <X>               a Throwable type
+     * @param exceptionSupplier An exception supplier.
+     * @return A value of type {@code R}.
+     * @throws NullPointerException if exceptionSupplier is null
+     * @throws X                    if this is a {@code Left}
+     */
+    @Override
+    public <X extends Throwable> R getOrElseThrow(Supplier<X> exceptionSupplier) throws X {
+        Objects.requireNonNull(exceptionSupplier, "exceptionSupplier is null");
+        if (isRight()) {
+            return get();
+        } else {
+            throw exceptionSupplier.get();
         }
     }
 
